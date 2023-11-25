@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoList.Service.Schema;
 
 namespace TodoList.Service.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "user")]
     [Route("[controller]/[action]")]
     public class ToDoListController : ControllerBase
     {

@@ -28,19 +28,23 @@ namespace TodoList.Service.Services.JWTRepository
                 return null;
             }
 
-            return GenerateToken(users);
+            return GenerateAccessToken(users);
         }
 
-        private Tokens GenerateToken(Users users)
+        public Tokens GenerateAccessToken(Users users)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+            var roles = users.Name == "user2" ? "notuser" : "user";
             var tokenKey = Encoding.UTF8.GetBytes(_configuration["JWT:Key"]);
+            List<Claim> claims = new()
+            {
+                new(ClaimTypes.Name, users.Name),
+                new(ClaimTypes.Role, roles)
+            };
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, users.Name)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -48,6 +52,11 @@ namespace TodoList.Service.Services.JWTRepository
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return new Tokens { Token = tokenHandler.WriteToken(token) };
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return "hi";
         }
     }
 }
