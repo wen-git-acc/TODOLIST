@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Remember to make it environment variable
 builder.Configuration.AddEnvironmentVariables(prefix:"JWTCred_");
+builder.Configuration.AddEnvironmentVariables(prefix: "Firestore_");
 Console.WriteLine(builder.Configuration["JWT:Key"]);
 // Add services to the container.
 builder.Services.AddAuthentication(x =>

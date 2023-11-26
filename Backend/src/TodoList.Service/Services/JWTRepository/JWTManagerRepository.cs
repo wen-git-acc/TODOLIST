@@ -13,9 +13,9 @@ namespace TodoList.Service.Services.JWTRepository
 
         Dictionary<string, string> UsersRecords = new ()
         {
-            { "user1","password1"},
+            { "liangfang","liangfang"},
             { "user2","password2"},
-            { "user3","password3"},
+            { "xiao","xiao"},
         };
 
         private readonly IConfiguration _configuration;

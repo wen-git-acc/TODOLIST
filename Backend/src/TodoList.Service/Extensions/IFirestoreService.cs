@@ -5,20 +5,19 @@ namespace TodoList.Service.Extensions
 {
     public interface IFirestoreService
     {
-        public void AddData(string collectionName);
         //public void GetData<T>(string collectionName, string documentName);
 
 
-        Task<List<T>> GetAllAsync<T>(string collectionName) where T : FirestoreTaskItemConfig;
+        Task<List<T>> GetAllAsync<T>(string ownerName) where T : FirestoreTaskItemConfig;
    
-        Task<object> GetAsync<T>(string collectionName, string documentName) where T : TaskItemConfig;
+        Task<object> GetAsync<T>(string documentName) where T : FirestoreTaskItemConfig;
        
-        Task<T> AddAsync<T>(T entity, string collectionName, string documentName) where T : TaskItemConfig;
+        Task<T> AddAsync<T>(T entity) where T : FirestoreTaskItemConfig;
         
-        Task<T> UpdateAsync<T>(T entity, string collectionName, string documentName) where T : TaskItemConfig;
+        Task<T> UpdateAsync<T>(T entity, string documentName) where T : FirestoreTaskItemConfig;
 
-        Task DeleteAsync<T>(string collectionName, string documentName) where T : TaskItemConfig;
+        Task DeleteAsync<T>(string documentName) where T : FirestoreTaskItemConfig;
 
-        Task<List<T>> QueryRecordsAsync<T>(Query query) where T : TaskItemConfig;
+        Task<List<T>> QueryRecordsAsync<T>(Query query) where T : FirestoreTaskItemConfig;
     }
 }

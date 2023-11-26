@@ -19,7 +19,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "JWTCred_JWT__Key": "This is my supper secret key for jwt",
         "JWTCred_JWT__Issuer": "https://fangwen.info",
-        "JWTCred_JWT__Audience": "todolist.info"
+        "JWTCred_JWT__Audience": "todolist.info",
+        "Firestore_Collection": "TaskItemCollections",
+        "Firestore_ProjectId": "todolistdatabase-ef822"
       }
     },
     "IIS Express": {

@@ -25,6 +25,6 @@ namespace TodoList.Service.Schema
         public string Status { get; set; }
 
         [FirestoreProperty]
-        public string Owner { get; set; }
+        public List<string> Owner { get; set; }
     }
 }

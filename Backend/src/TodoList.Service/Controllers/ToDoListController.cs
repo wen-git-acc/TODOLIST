@@ -1,8 +1,11 @@
+using Google.Cloud.Firestore.V1;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoList.Service.Extensions;
 using TodoList.Service.Schema;
 using TodoList.Service.Services.JWTRepository;
+using static Google.Rpc.Context.AttributeContext.Types;
+using TaskStatus = TodoList.Service.Schema.TaskStatus;
 
 namespace TodoList.Service.Controllers
 {
@@ -41,26 +44,43 @@ namespace TodoList.Service.Controllers
 
         [HttpPost]
         [ActionName("CreateTask")]
-        public ActionResult CreateNewTask([FromBody] TaskItemConfig taskItem)
+        public async Task<ActionResult> CreateNewTask([FromBody] TaskItemConfig taskItem)
         {
-            var taskStatus = taskItem.Status;
-            Console.WriteLine(taskStatus);
+            var token = Request.Headers.Authorization;
+            var ownerEmail = _jwtManagerRepository.ReadClaims(token, "Email");
+            var firebaseData = new FirestoreTaskItemConfig
+            {
+                DocumentId = taskItem.UniqueId,
+                DueDate = taskItem.DueDate,
+                Name = taskItem.Name,
+                Owner = new List<string>{ownerEmail},
+                Status = taskItem.Status.ToString(),
+                UniqueId = taskItem.UniqueId,
+                Description = taskItem.Description,
+            };
+
+            await _firestoreDb.AddAsync<FirestoreTaskItemConfig>(firebaseData);
             return Ok();
         }
 
         [HttpGet]
         [ActionName("GetTask")]
-        public async Task<ActionResult> GetTask()
+        public async Task<ActionResult<List<TaskItemConfig>>> GetTasks()
         {
             var token = Request.Headers.Authorization;
-            var email=_jwtManagerRepository.ReadClaims(token, "Email");
-            //_firestoreDb.AddData("TaskItemCollections");
-            var document = "nir3bnP82aCpHVUaIL4m";
-            await _firestoreDb.GetAllAsync<FirestoreTaskItemConfig>("TaskItemCollections");
-            //_firestoreDb.GetData<FirestoreTaskItemConfig>("TaskItemCollections",document);
-
-            Console.WriteLine(email);
-            return Ok();
+            var ownerEmail=_jwtManagerRepository.ReadClaims(token, "Email");
+            var response = await _firestoreDb.GetAllAsync<FirestoreTaskItemConfig>(ownerEmail);
+          
+            var taskItemList = response.Select(data => new TaskItemConfig
+            {
+                UniqueId = data.UniqueId,
+                Description = data.Description,
+                DueDate = data.DueDate,
+                Name = data.Name,
+                Status = Enum.TryParse(data.Status.ToLower(), out TaskStatus value) ? value : null,
+            }).ToList();
+            
+            return Ok(taskItemList);
         }
 
         [HttpGet]
@@ -84,20 +104,44 @@ namespace TodoList.Service.Controllers
 
         [HttpDelete]
         [ActionName("DeleteTask")]
-        public ActionResult DeleteTask([FromBody] TaskItemConfig taskItem)
+        public async Task<ActionResult<List<TaskItemConfig>>> DeleteTask([FromBody] TaskItemConfig taskItem)
         {
-            var taskStatus = taskItem.Status;
-            Console.WriteLine(taskStatus);
-            return Ok();
+            var token = Request.Headers.Authorization;
+            var ownerEmail = _jwtManagerRepository.ReadClaims(token, "Email");
+            await _firestoreDb.DeleteAsync<FirestoreTaskItemConfig>(taskItem.UniqueId);
+            var response = await _firestoreDb.GetAllAsync<FirestoreTaskItemConfig>(ownerEmail);
+            var taskItemList = response.Select(data => new TaskItemConfig
+            {
+                UniqueId = data.UniqueId,
+                Description = data.Description,
+                DueDate = data.DueDate,
+                Name = data.Name,
+                Status = Enum.TryParse(data.Status.ToLower(), out TaskStatus value) ? value : null,
+            }).ToList();
+
+            return Ok(taskItemList);
         }
 
         [HttpDelete]
         [ActionName("UpdateTask")]
-        public ActionResult UpdateTask([FromBody] TaskItemConfig taskItem)
+        public async void UpdateTask([FromBody] TaskItemConfig taskItem)
         {
-            var taskStatus = taskItem.Status;
-            Console.WriteLine(taskStatus);
-            return Ok();
+            //var token = Request.Headers.Authorization;
+            //var ownerEmail = _jwtManagerRepository.ReadClaims(token, "Email");
+            //var currentFirebaseData = _firestoreDb.GetAsync<>()
+            //var firebaseData = new FirestoreTaskItemConfig
+            //{
+            //    DocumentId = taskItem.UniqueId,
+            //    DueDate = taskItem.DueDate,
+            //    Name = taskItem.Name,
+            //    Owner = new List<string> { ownerEmail},
+            //    Status = "InProgress",
+            //    UniqueId = id,
+            //    Description = "this is testing 2"
+            //};
+            //_firestoreDb.UpdateAsync(taskItem, taskItem.UniqueId);
+            //var taskStatus = taskItem.Status;
+            //Console.WriteLine(taskStatus);
         }
 
 

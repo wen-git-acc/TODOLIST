@@ -18,20 +18,20 @@ namespace TodoList.Service.Schema
         public DateTime DueDate { get; set; }
 
         [JsonPropertyName("status")]
-        public TaskStatus Status { get; set; }
+        public TaskStatus? Status { get; set; }
     }
 
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TaskStatus
     {
-        [EnumMember(Value = "notStarted")]
-        NotStarted,
+        [EnumMember(Value = "notstarted")]
+        notstarted,
 
-        [EnumMember(Value = "inProgress")]
-        InProgress,
+        [EnumMember(Value = "inprogress")]
+        inprogress,
 
         [EnumMember(Value = "completed")]
-        Completed
+        completed
     }
 }
