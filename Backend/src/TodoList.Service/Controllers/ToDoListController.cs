@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TodoList.Service.Extensions;
 using TodoList.Service.Schema;
+using TodoList.Service.Services.JWTRepository;
 
 namespace TodoList.Service.Controllers
 {
@@ -15,10 +17,14 @@ namespace TodoList.Service.Controllers
     //};
 
         private readonly ILogger<ToDoListController> _logger;
+        private readonly IJWTManagerRepository _jwtManagerRepository;
+        private readonly IFirestoreService _firestoreDb;
 
-        public ToDoListController(ILogger<ToDoListController> logger)
+        public ToDoListController(ILogger<ToDoListController> logger, IJWTManagerRepository jwtManagerRepository, IFirestoreService firestoreDb)
         {
             _logger = logger;
+            _jwtManagerRepository = jwtManagerRepository;
+            _firestoreDb = firestoreDb;
         }
 
         //[HttpGet(Name = "GetWeatherForecast")]
@@ -44,8 +50,16 @@ namespace TodoList.Service.Controllers
 
         [HttpGet]
         [ActionName("GetTask")]
-        public ActionResult GetTask()
+        public async Task<ActionResult> GetTask()
         {
+            var token = Request.Headers.Authorization;
+            var email=_jwtManagerRepository.ReadClaims(token, "Email");
+            //_firestoreDb.AddData("TaskItemCollections");
+            var document = "nir3bnP82aCpHVUaIL4m";
+            await _firestoreDb.GetAllAsync<FirestoreTaskItemConfig>("TaskItemCollections");
+            //_firestoreDb.GetData<FirestoreTaskItemConfig>("TaskItemCollections",document);
+
+            Console.WriteLine(email);
             return Ok();
         }
 

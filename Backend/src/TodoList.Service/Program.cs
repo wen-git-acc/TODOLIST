@@ -2,12 +2,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using TodoList.Service.Extensions;
 using TodoList.Service.Services.JWTRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Remember to make it environment variable
-builder.Configuration.AddEnvironmentVariables("JWTCred");
+builder.Configuration.AddEnvironmentVariables(prefix:"JWTCred_");
+Console.WriteLine(builder.Configuration["JWT:Key"]);
 // Add services to the container.
 builder.Services.AddAuthentication(x =>
 {
@@ -30,7 +32,8 @@ builder.Services.AddAuthentication(x =>
 });
 
 builder.Services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();
-
+builder.Services.AddFirestoreClient();
+builder.Services.AddFirestoreExtension();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -16,7 +16,10 @@
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5290",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWTCred_JWT__Key": "This is my supper secret key for jwt",
+        "JWTCred_JWT__Issuer": "https://fangwen.info",
+        "JWTCred_JWT__Audience": "todolist.info"
       }
     },
     "IIS Express": {

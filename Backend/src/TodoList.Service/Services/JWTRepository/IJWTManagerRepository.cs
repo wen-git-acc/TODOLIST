@@ -2,5 +2,7 @@
 
 public interface IJWTManagerRepository
 {
-    Tokens Authenticate(Users users);
+    public Tokens Authenticate(Users users);
+    public string ReadClaims(string token, string targetClaimType);
+
 }
