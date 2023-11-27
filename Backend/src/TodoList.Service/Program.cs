@@ -3,7 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using TodoList.Service.Extensions;
+using TodoList.Service.Services.Database;
 using TodoList.Service.Services.JWTRepository;
+using TodoList.Service.Services.Transformers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,8 @@ builder.Services.AddAuthentication(x =>
 });
 
 builder.Services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();
+builder.Services.AddSingleton<ITransformerService, TransformerService>();
+builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
 builder.Services.AddFirestoreClient();
 builder.Services.AddFirestoreExtension();
 

@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Google.Rpc.Context;
 using Microsoft.IdentityModel.Tokens;
 
 namespace TodoList.Service.Services.JWTRepository
@@ -73,9 +74,6 @@ namespace TodoList.Service.Services.JWTRepository
             return targetValue;
 
         }
-        public string GenerateRefreshToken()
-        {
-            return "hi";
-        }
+      
     }
 }
