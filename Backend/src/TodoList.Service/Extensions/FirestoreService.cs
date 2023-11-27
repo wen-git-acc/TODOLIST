@@ -32,19 +32,6 @@ namespace TodoList.Service.Extensions
             firestoreDb = FirestoreDb.Create(_projectId, builder.Build());
         }
 
-
-        //public async void GetData<T>(string collectionName, string documentName)
-        //{
-        //    var collection = firestoreDb.Collection(collectionName);
-        //    var snapshots = await collection.GetSnapshotAsync();
-        //    var taskItemDocument = snapshots.Documents.Select(s => s.ConvertTo<T>()).ToList();
-        //    var documentReference = collection.Document(documentName);
-        //    var snapShot = await documentReference.GetSnapshotAsync();
-        //    var x = snapShot.ToDictionary();
-        //    Console.WriteLine(item);
-
-        //}
-
         public async Task<List<T>> GetAllAsync<T>(string ownerName) where T : FirestoreTaskItemConfig
         {
             var query = firestoreDb.Collection(_collectionName).WhereArrayContains("Owner",ownerName);
@@ -60,30 +47,50 @@ namespace TodoList.Service.Extensions
             return list;
         }
 
-        /// <inheritdoc />
-        public async Task<object> GetAsync<T>(string documentName) where T : FirestoreTaskItemConfig
+        public async Task<List<T>> GetAllByQueryAsync<T>(string ownerName, string? status = null, string? name = null) where T : FirestoreTaskItemConfig
+        {
+            var query = firestoreDb.Collection(_collectionName).WhereArrayContains("Owner",ownerName);
+            if (status != null)
+            {
+                query = query.WhereEqualTo("Status", status);
+            }  
+            
+            if (name != null)
+            {
+                query = query.WhereEqualTo("Name", name);
+            }
+
+            var querySnapshot = await query.GetSnapshotAsync();
+            var list = new List<T>();
+            foreach (var documentSnapshot in querySnapshot.Documents)
+            {
+                if (!documentSnapshot.Exists) continue;
+                var data = documentSnapshot.ConvertTo<T>();
+                if (data == null) continue;
+                list.Add(data);
+            }
+            return list;
+        }
+
+        public async Task<T> GetAsync<T>(string documentName) where T : FirestoreTaskItemConfig
         {
             var docRef = firestoreDb.Collection(_collectionName).Document(documentName);
             var snapshot = await docRef.GetSnapshotAsync();
             if (snapshot.Exists)
             {
-                var usr = snapshot.ConvertTo<T>();
-                //usr.Id = snapshot.Id;
-                return usr;
+                var data = snapshot.ConvertTo<T>();
+                return data;
             }
 
             return null;
         }
 
-        /// <inheritdoc />
         public async Task<T> AddAsync<T>(T item) where T : FirestoreTaskItemConfig
         {
-     
-
             try
             {
                 var colRef = firestoreDb.Collection(_collectionName).Document(item.DocumentId);
-                var doc = await colRef.SetAsync(item);
+                await colRef.SetAsync(item);
 
             }
             catch (Exception e)
@@ -91,12 +98,9 @@ namespace TodoList.Service.Extensions
                 Console.WriteLine(e.Message);
 
             }
-            // GO GET RECORD FROM DATABASE:
-            // return (T) await GetAsync(entity); 
             return item;
         }
 
-        /// <inheritdoc />
         public async Task<T> UpdateAsync<T>(T item, string documentName) where T : FirestoreTaskItemConfig
         {
             try
@@ -109,37 +113,15 @@ namespace TodoList.Service.Extensions
                 Console.WriteLine(e.Message);
 
             }
-       
-            // GO GET RECORD FROM DATABASE:
-            // return (T)await GetAsync(entity);
+            
             return item;
         }
 
-        /// <inheritdoc />
         public async Task DeleteAsync<T>(string documentName) where T : FirestoreTaskItemConfig
         {
             var recordRef = firestoreDb.Collection(_collectionName).Document(documentName);
             await recordRef.DeleteAsync();
         }
-
-        /// <inheritdoc />
-        public async Task<List<T>> QueryRecordsAsync<T>(Query query) where T : FirestoreTaskItemConfig
-        {
-            var querySnapshot = await query.GetSnapshotAsync();
-            var list = new List<T>();
-            //foreach (var documentSnapshot in querySnapshot.Documents)
-            //{
-            //    if (!documentSnapshot.Exists) continue;
-            //    var data = documentSnapshot.ConvertTo<T>();
-            //    if (data == null) continue;
-            //    data.Id = documentSnapshot.Id;
-            //    list.Add(data);
-            //}
-
-            return list;
-        }
-
-
 
     }
 }

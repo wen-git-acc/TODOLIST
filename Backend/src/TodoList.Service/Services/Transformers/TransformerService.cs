@@ -1,4 +1,6 @@
-﻿using TodoList.Service.Services.JWTRepository;
+﻿using TodoList.Service.Schema;
+using TodoList.Service.Services.JWTRepository;
+using TaskStatus = TodoList.Service.Schema.TaskStatus;
 
 namespace TodoList.Service.Services.Transformers
 {
@@ -10,7 +12,7 @@ namespace TodoList.Service.Services.Transformers
         {
             _jwtManagerRepository = jwtManagerRepository;
         }
-        public string GetUserNameFromClaims(HttpRequest request, string targetClaimType)
+        public string GetUserFromClaims(HttpRequest request, string targetClaimType)
         {
             var token = request.Headers.Authorization;
             if (String.IsNullOrEmpty(token))
@@ -22,5 +24,36 @@ namespace TodoList.Service.Services.Transformers
 
             return targetClaim;
         }
+
+        public FirestoreTaskItemConfig TransformToFireStoreConfig(TaskItemConfig data, List<string> users)
+        {
+            var firebaseData = new FirestoreTaskItemConfig
+            {
+                DocumentId = data.UniqueId,
+                DueDate = data.DueDate,
+                Name = data.Name,
+                Owner = users,
+                Status = data.Status.ToString(),
+                UniqueId = data.UniqueId,
+                Description = data.Description,
+            };
+
+            return firebaseData;
+        }
+
+        public TaskItemConfig TransformToTaskItemConfig(FirestoreTaskItemConfig data)
+        {
+            var taskItem = new TaskItemConfig
+            {
+                UniqueId = data.UniqueId,
+                Description = data.Description,
+                DueDate = data.DueDate,
+                Name = data.Name,
+                Status = Enum.TryParse(data.Status.ToLower(), out TaskStatus value) ? value : null,
+            };
+
+            return taskItem;
+        }
     }
 }
+

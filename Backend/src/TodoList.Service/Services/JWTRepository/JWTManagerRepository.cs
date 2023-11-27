@@ -69,6 +69,12 @@ namespace TodoList.Service.Services.JWTRepository
             {
                 token = token.Substring("Bearer ".Length);
             }
+
+            if (String.IsNullOrEmpty(token))
+            {
+                return targetValue;
+            }
+
             var jwt = tokenHandler.ReadToken(token) as JwtSecurityToken;
             targetValue = jwt.Claims.First(claim => claim.Type == targetClaimType.ToLower()).Value ?? "";
             return targetValue;
