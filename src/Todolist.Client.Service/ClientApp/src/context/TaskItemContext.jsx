@@ -12,7 +12,7 @@ function TaskItemProvider({ children }) {
 
     const contextValue = {
         taskItemList,
-        setTaskItemList,
+        updateTaskItemList,
     };
 
     return (

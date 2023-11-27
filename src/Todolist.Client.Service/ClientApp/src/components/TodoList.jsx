@@ -12,25 +12,30 @@ padding: 0
 
 
 export default function TodoList() {
-    const { accessToken, updateAccessToken, isLogin, updateLoginStatus, } = useContext(AuthContext);
-    const { taskItemList, setTaskItemList } = useContext(TaskItemContext);
-
+    const { accessToken, isLogin, updateLoginStatus } = useContext(AuthContext);
+    const { taskItemList, updateTaskItemList } = useContext(TaskItemContext);
+ 
     useEffect(() => {
         const fetchData = async () => {
-            var taskItemsList = await getTaskItemList();
-            setTaskItemList(taskItemsList);
-            console.log(taskItemsList);
+            var { taskItemsData, isUnauthorized } = await getTaskItemList();
            
+            if (isUnauthorized) {
+                updateLoginStatus(false);
+            }
+
+            updateTaskItemList(taskItemsData);
+  
         }
         if (isLogin) {
             fetchData();
         }
     }, [isLogin]); 
-
+    
     return <StyledUl>
         {accessToken != "" && <div>{accessToken}</div>}
         {taskItemList.length > 0 && taskItemList.map(data => {
             return <TodoItem
+                key={data["uniqueId"]}
                 uniqueId={data["uniqueId"]}
                 name={data["name"]}
                 description={data["description"]}

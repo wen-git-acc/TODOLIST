@@ -135,11 +135,14 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const StyledList = styled.li`
     list-style: none;
-    width: 100%;
+    width: 600px;
+    minimum-width: 300px;
     margin-bottom: 10px;
+    margin: auto;
     border: 1px solid #ccc;
     padding: 10px;
     position: relative;
+    
 `
 
 const StyledLabel = styled.label`
@@ -211,6 +214,19 @@ const StyledSubmitButton = styled.button`
     right: 5px;
 `
 
+const StyledAddOwnerButton = styled.button`
+    background: palevioletred;
+    color: #FFF;
+    border-radius: 3px;
+    border: 2px solid palevioletred;
+    padding: 3px 10px;
+    outline: none;
+    cursor: pointer;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+`
+
 const StyledInput = styled.input`
    
     margin-right: 5px;
@@ -222,21 +238,16 @@ const StyledSelect = styled.select`
     border: ${({ isEdit }) => (isEdit ? '1px solid #ccc' : 'none')};
 `
 
-
-var initialName;
-var initialDescription;
-var initialDueDate;
-var initialStatus;
 export default function TodoItem(props) {
     //Todo change back to const
     const { uniqueId, name , description , dueDate , status  } = props;
-    console.log(initialDueDate);
 
     const [editName, setName] = useState(name);
     const [editDescription, setDescription] = useState(description);
     const [editStatus, setStatus] = useState(status);
     const [editDueDate, setDueDate] = useState(dueDate);
     const [isEdit, setIsEdit] = useState(false);
+    const [owner, setOwner] = useState("");
 
     const handleDelete = (e) => {
         e.preventDefault();
@@ -258,14 +269,23 @@ export default function TodoItem(props) {
         setIsEdit(false);
     };
 
+    const handleAddOwner = (e) => {
+        e.preventDefault();
+        // Placeholder function for export logic
+        setOwner("");
+        console.log(`Exporting task with ID: ${uniqueId} to owner: ${owner}`);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // Placeholder function for submit logic
+        console.log(editDueDate);
+        console.log(typeof (editDueDate));
         var newTaskItem = {
             UniqueId: uniqueId,
             Name: editName,
             Description: editDescription,
-            DueDate: editDueDate,
+            DueDate: (new Date(editDueDate)).toISOString(),
             Status: editStatus
         }
 
@@ -304,13 +324,12 @@ export default function TodoItem(props) {
                                 <option value="inprogress">In Progress</option>
                                 <option value="completed">Completed</option>
                             </StyledSelect>
-                         
-                            <DatePicker
-                                selected={new Date(editDueDate)}
-                                onChange={(date) => setDueDate(date.toISOString())}
-                                dateFormat="yyyy-MM-dd"
-                                />
-                          
+                            <StyledInput
+                                type="date"
+                                placeholder={editDueDate.split('T')[0]}
+                                value={editDueDate}
+                                onChange={(e) => setDueDate(e.target.value)}
+                            />
                         </>
                     ) : (
                         <>
@@ -318,6 +337,12 @@ export default function TodoItem(props) {
                             <div>Description: {description}</div>
                             <div>Status: {status}</div>
                             <div>Due Date: {dueDate.split('T')[0]}</div>
+                            <StyledInput
+                                type="text"
+                                placeholder="Enter new owner"
+                                value={owner}
+                                onChange={(e) => setOwner(e.target.value)}
+                            />
                         </>
                     )}
                 </StyledInfo>
@@ -327,8 +352,13 @@ export default function TodoItem(props) {
                         <StyledSubmitButton type="button" onClick={handleSubmit}>Submit</StyledSubmitButton>
                     </>
                 ) : (
-                    <StyledEditButton type="button" onClick={handleEdit}>Edit</StyledEditButton>
+                    <>
+                        <StyledEditButton type="button" onClick={handleEdit}>Edit</StyledEditButton>
+                        <StyledAddOwnerButton type="button" onClick={handleAddOwner}>Add Owner</StyledAddOwnerButton>
+                    </>
+
                 )}
+
             </StyledLabel>
         </StyledList>
     );
@@ -341,3 +371,10 @@ TodoItem.propTypes = {
     dueDate: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
 };
+
+
+                              //<DatePicker
+                            //    selected={new Date(editDueDate)}
+                            //    onChange={(date) => setDueDate(date.toISOString())}
+                            //    dateFormat="yyyy-MM-dd"
+                            //    />

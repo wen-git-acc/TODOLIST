@@ -1,5 +1,8 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
+import { TaskItemContext } from '../context/TaskItemContext';
+import { AuthContext } from '../context/AuthContext';
+import { createTaskItem, getTaskItemList } from '../Client/todoListClient';
 
 //const FormInput = styled.input`
 //    width: 235px;
@@ -38,26 +41,65 @@ const StyledButton = styled.button`
   cursor: pointer;
 `;
 
+const SubmitResult = styled.div`
+  margin-top: 10px;
+  color: ${({ success }) => (success ? 'green' : 'red')};
+`;
+
 export default function TodoForm() {
+    const { updateLoginStatus } = useContext(AuthContext);
+    const { updateTaskItemList } = useContext(TaskItemContext);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [status, setStatus] = useState('notstarted');
     const [dueDate, setDueDate] = useState('');
-    const [id, setId] = useState(generateUniqueId());
+    const [uniqueId, setUniqueId] = useState(generateUniqueId());
+    const [submitResult, setSubmitResult] = useState(true);
 
     function generateUniqueId() {
         return Math.floor(Math.random() * 1000000).toString();
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        const formData = { id, name, description, status, dueDate };
-        console.log('Submitted:', formData);
-        setId(generateUniqueId());
+        setUniqueId(generateUniqueId());
+
+        if (uniqueId === "" || name === "" || dueDate === "") {
+            setSubmitResult(false);
+            return;
+        }
+
+
+        var newTaskItem = {
+            UniqueId: uniqueId,
+            Name: name,
+            Description: description,
+            DueDate: (new Date(dueDate)).toISOString(),
+            Status: status
+        }
+        console.log(dueDate);
+        var datet = new Date(dueDate);
+        var iso = datet.toISOString();
+        console.log(iso);
+
+        var { taskItemsData, isUnauthorized } = await createTaskItem(newTaskItem);
+
+        if (isUnauthorized) {
+            updateLoginStatus(false);
+        }
+
+        updateTaskItemList(taskItemsData);
+
+        //    const formData = { uniqueId, name, description, status, dueDate };
+
+
+        //console.log('Submitted:', formData);
+      
         setName('');
         setDescription('');
         setStatus('notstarted');
         setDueDate('');
+        setSubmitResult(true);
     }
 
     return (
@@ -91,6 +133,9 @@ export default function TodoForm() {
                 />
                 <StyledButton type="submit">Add Task</StyledButton>
             </FormContainer>
+            {!submitResult && < SubmitResult success={submitResult}>
+                Please Submit with all field filled!
+            </SubmitResult>}
         </form>
     );
 }
