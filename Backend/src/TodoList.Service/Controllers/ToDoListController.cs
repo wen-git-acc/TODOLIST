@@ -21,29 +21,15 @@ namespace TodoList.Service.Controllers
     //};
 
         private readonly ILogger<ToDoListController> _logger;
-        private readonly IJWTManagerRepository _jwtManagerRepository;
-        private readonly IFirestoreService _firestoreDb;
+     
         private readonly IDatabaseService _database;
 
-        public ToDoListController(ILogger<ToDoListController> logger, IJWTManagerRepository jwtManagerRepository, IFirestoreService firestoreDb, IDatabaseService database)
+        public ToDoListController(ILogger<ToDoListController> logger, IDatabaseService database)
         {
             _logger = logger;
-            _jwtManagerRepository = jwtManagerRepository;
-            _firestoreDb = firestoreDb;
+     
             _database = database;
         }
-
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
 
         [HttpPost]
         [ActionName("CreateTask")]
