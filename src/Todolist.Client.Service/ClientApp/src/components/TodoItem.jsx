@@ -1,137 +1,9 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useContext } from "react";
 import styled from 'styled-components';
 import PropTypes from "prop-types";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-//const StyledList = styled.li`
-//    list-style: none;
-//    overflow: hidden;
-//    width: 100%;
-//    margin-bottom: 10px
-//`
-//const StyledLabel = styled.label`
-//    float: left;
-//    cursor: pointer
-//`
-//const StyledButton = styled.button`
-//    float: right;
-//    background: palevioletred;
-//    color: #FFF;
-//    border-radius: 3px;
-//    border: 2px solid palevioletred;
-//    padding: 3px 10px;
-//    outline: none;
-//    cursor: pointer
-//`
-
-
-//export default function TodoItem(props) {
-//    const { id, title } = props
-
-//    return (
-//        <StyledList>
-//            <StyledLabel htmlFor={id}>
-//                <input type="checkbox" id={id} /> {title}
-//            </StyledLabel>
-//            <StyledButton type="button">Delete</StyledButton>
-//        </StyledList>
-//    )
-//}
-
-//TodoItem.propTypes = {
-//    title: PropTypes.string.isRequired,
-//    id: PropTypes.string.isRequired
-//}
-
-//const StyledList = styled.li`
-//    list-style: none;
-//    overflow: hidden;
-//    width: 100%;
-//    margin-bottom: 10px;
-//    border: 1px solid #ccc;
-//    padding: 10px;
-//`
-
-//const StyledLabel = styled.label`
-//    display: flex;
-//    align-items: center;
-//`
-
-//const StyledCheckbox = styled.input`
-//    margin-right: 10px;
-//`
-
-//const StyledInfo = styled.div`
-//    flex-grow: 1;
-//`
-
-//const StyledButton = styled.button`
-//    background: palevioletred;
-//    color: #FFF;
-//    border-radius: 3px;
-//    border: 2px solid palevioletred;
-//    padding: 3px 10px;
-//    outline: none;
-//    cursor: pointer;
-//    margin-right: 5px;
-//`
-
-//const StyledInput = styled.input`
-//    margin-right: 5px;
-//`
-//const TopSectionDiv = styled.div`
-//    display: flex;
-//    flex-direction: row;
-//`
-//export default function TodoItem(props) {
-//    var { uniqueId, name, description, dueDate, status } = props;
-
-//    uniqueId = "123";
-//    name = 'ben';
-//    description = "This is my first text";
-
-//    dueDate = Date.now();
-//    status = "inprogress";
-
-//    const handleDelete = () => {
-//        // Placeholder function for delete logic
-//        console.log(`Deleting task with ID: ${uniqueId}`);
-//    };
-
-//    const handleAddPeople = () => {
-//        // Placeholder function for add people logic
-//        console.log(`Adding people to task with ID: ${uniqueId}`);
-//    };
-
-//    return (
-//        <StyledList>
-//            <TopSectionDiv>
-//            <StyledLabel htmlFor={uniqueId}>
-//                {/*<StyledCheckbox type="checkbox" id={uniqueId} />*/}
-//                <StyledInfo>
-//                    <div>{name}</div>
-//                    <div>{status}</div>
-//                    <div>{description}</div>
-//                </StyledInfo>
-//                </StyledLabel>
-//                <StyledButton type="button" onClick={handleDelete}>Delete</StyledButton>
-//            </TopSectionDiv>
-//            <StyledInput type="text" placeholder="Enter user ID" />
-//            <StyledButton type="button" onClick={handleAddPeople}>Add People</StyledButton>
-
-//        </StyledList>
-//    );
-//}
-
-//TodoItem.propTypes = {
-//    uniqueId: PropTypes.string.isRequired,
-//    name: PropTypes.string.isRequired,
-//    description: PropTypes.string.isRequired,
-//    dueDate: PropTypes.string.isRequired,
-//    status: PropTypes.string.isRequired,
-//};
-
-
+import { updateTask, deleteTaskItem } from "../Client/todoListClient";
+import { AuthContext } from '../context/AuthContext';
+import { TaskItemContext } from '../context/TaskItemContext';
 
 const StyledList = styled.li`
     list-style: none;
@@ -241,46 +113,76 @@ const StyledSelect = styled.select`
 export default function TodoItem(props) {
     //Todo change back to const
     const { uniqueId, name , description , dueDate , status  } = props;
-
+    const { accessToken, isLogin, updateLoginStatus } = useContext(AuthContext);
+    const { taskItemList, updateTaskItemList } = useContext(TaskItemContext);
     const [editName, setName] = useState(name);
     const [editDescription, setDescription] = useState(description);
     const [editStatus, setStatus] = useState(status);
     const [editDueDate, setDueDate] = useState(dueDate);
     const [isEdit, setIsEdit] = useState(false);
-    const [owner, setOwner] = useState("");
+    const [newOwner, setNewOwner] = useState("");
 
-    const handleDelete = (e) => {
+    async function handleDelete (e) {
         e.preventDefault();
-        // Placeholder function for delete logic call delete client
+
+        var newTaskItem = {
+            UniqueId: uniqueId,
+            Name: name,
+            Description: description,
+            DueDate: (new Date(dueDate)).toISOString(),
+            Status: status,
+        }
+
+        var { taskItemsData, isUnauthorized } = await deleteTaskItem(newTaskItem);
+
+        if (isUnauthorized) {
+            updateLoginStatus(false);
+        }
+
+        updateTaskItemList(taskItemsData);
+
         console.log(`Deleting task with ID: ${uniqueId}`);
     };
 
-    const handleEdit = (e) => {
+    function handleEdit (e) {
         e.preventDefault();
         setIsEdit(true);
     };
 
-    const handleCancel = (e) => {
+    function handleCancel(e) {
         e.preventDefault();
-        //setName(initialName);
-        //setDescription(initialDescription);
-        //setStatus(initialStatus);
-        //setDueDate(initialDueDate);
         setIsEdit(false);
     };
 
-    const handleAddOwner = (e) => {
-        e.preventDefault();
-        // Placeholder function for export logic
-        setOwner("");
-        console.log(`Exporting task with ID: ${uniqueId} to owner: ${owner}`);
+    async function handleAddOwner (e) {
+        console.log("Add owner");
+        if (newOwner.trim() == "") {
+            return;
+        };
+    
+        var currentTaskItem = {
+            UniqueId: uniqueId,
+            Name: name,
+            Description: description,
+            DueDate: (new Date(dueDate)).toISOString(),
+            Status: status,
+        }
+
+        var { taskItemsData, isUnauthorized } = await updateTask(currentTaskItem, newOwner);
+
+        if (isUnauthorized) {
+            updateLoginStatus(false);
+        }
+
+        updateTaskItemList(taskItemsData);
+
+        setNewOwner("");
+        console.log(`Exporting task with ID: ${uniqueId} to owner: ${newOwner}`);
     };
 
-    const handleSubmit = (e) => {
+    async function handleSubmit (e){
         e.preventDefault();
-        // Placeholder function for submit logic
-        console.log(editDueDate);
-        console.log(typeof (editDueDate));
+
         var newTaskItem = {
             UniqueId: uniqueId,
             Name: editName,
@@ -288,6 +190,14 @@ export default function TodoItem(props) {
             DueDate: (new Date(editDueDate)).toISOString(),
             Status: editStatus
         }
+
+        var { taskItemsData, isUnauthorized } = await updateTask(newTaskItem, "");
+
+        if (isUnauthorized) {
+            updateLoginStatus(false);
+        }
+
+        updateTaskItemList(taskItemsData);
 
         console.log(`Submitting changes for task with ID: ${uniqueId}`);
         console.log(`Name: ${editName}, Description: ${editDescription}, Status: ${editStatus}`);
@@ -340,8 +250,8 @@ export default function TodoItem(props) {
                             <StyledInput
                                 type="text"
                                 placeholder="Enter new owner"
-                                value={owner}
-                                onChange={(e) => setOwner(e.target.value)}
+                                value={newOwner}
+                                onChange={(e) => setNewOwner(e.target.value)}
                             />
                         </>
                     )}
@@ -373,8 +283,4 @@ TodoItem.propTypes = {
 };
 
 
-                              //<DatePicker
-                            //    selected={new Date(editDueDate)}
-                            //    onChange={(date) => setDueDate(date.toISOString())}
-                            //    dateFormat="yyyy-MM-dd"
-                            //    />
+                        

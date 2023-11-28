@@ -4,23 +4,6 @@ import { TaskItemContext } from '../context/TaskItemContext';
 import { AuthContext } from '../context/AuthContext';
 import { createTaskItem, getTaskItemList } from '../Client/todoListClient';
 
-//const FormInput = styled.input`
-//    width: 235px;
-//    outline: none;
-//    font-size: 13px;
-//    padding-top: 7px;
-//    padding-bottom: 7px;
-//    padding-left: 10px;
-//`;
-
-//export default function TodoForm() {
-//    return (
-//        <form>
-//            <FormInput placeholder="Enter new todo" />
-//        </form>
-//    )
-//}
-
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -89,12 +72,7 @@ export default function TodoForm() {
         }
 
         updateTaskItemList(taskItemsData);
-
-        //    const formData = { uniqueId, name, description, status, dueDate };
-
-
-        //console.log('Submitted:', formData);
-      
+     
         setName('');
         setDescription('');
         setStatus('notstarted');

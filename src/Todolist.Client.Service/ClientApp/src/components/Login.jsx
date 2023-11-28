@@ -1,5 +1,4 @@
 ﻿import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import { AuthContext } from '../context/AuthContext'; 
 import { getToken } from '../Client/authClient';
@@ -47,14 +46,14 @@ const SubmitButton = styled.button`
 
 const LoginResult = styled.div`
   margin-top: 10px;
-  color: ${({ success }) => (success ? 'green' : 'red')};
+  color: ${({ issuccess}) => (issuccess == "true" ? 'green' : 'red')};
 `;
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { accessToken, updateAccessToken, isLogin, updateLoginStatus, } = useContext(AuthContext);
-    const [loginResult, setLoginResult] = useState({message:"", Success:false});
+    const { updateLoginStatus } = useContext(AuthContext);
+    const [loginResult, setLoginResult] = useState({message:"", Success:"false"});
 
     async function handleLogin(e) {
             e.preventDefault();
@@ -62,9 +61,7 @@ const Login = () => {
             var { message, token, isSuccess } = await getToken(username, password);
           
             sessionStorage.setItem("accessToken", token);
-            updateLoginStatus(isSuccess);
-            updateAccessToken(token);
-            setLoginResult({message:message, Success:isSuccess});
+            updateLoginStatus(isSuccess);            setLoginResult({message:message, Success: isSuccess ? "true" : "false"});
     };
 
     return (
@@ -86,7 +83,7 @@ const Login = () => {
                 />
                 <SubmitButton type="submit">Login</SubmitButton>
             </LoginForm>
-            <LoginResult success={loginResult.Success}>
+            <LoginResult issuccess={loginResult.Success}>
                 {loginResult.message}
             </LoginResult>
             </LoginContainer>

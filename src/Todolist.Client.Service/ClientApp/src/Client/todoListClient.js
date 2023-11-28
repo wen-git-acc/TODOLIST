@@ -1,6 +1,5 @@
 ﻿import axios from 'axios';
 
-
 const todoListUrl = "/todolist";
 function getAccessToken() {
     return sessionStorage.getItem('accessToken');
@@ -51,7 +50,7 @@ export async function getTaskItemsByFilter(status, name, dueDate, order) {
     if (dueDate != null) {
         queryParameter += `&dueDate=${dueDate}`;
     }
-    //const queryParameter = `?status=${status}&name=${name}&dueDate=${dueDate}&order=${order}`;
+
     const url = `${todoListUrl}${path}${queryParameter}`;
    
     const accessToken = getAccessToken();
@@ -81,9 +80,16 @@ export async function getTaskItemsByFilter(status, name, dueDate, order) {
     return { taskItemsData, isUnauthorized };
 }
 
-export async function updateTask (){
-    const path = "/gettask";
-    const url = `${todoListUrl}${path}`;
+export async function updateTask(data, newOwner) {
+    var queryParameter=""
+    newOwner = newOwner.trim();
+    if (newOwner !== "") {
+        queryParameter = `?newitemuser=${newOwner}`;
+    }
+    const path = "/updatetask";
+    const url = `${todoListUrl}${path}${queryParameter}`;
+    console.log(url);
+    console.log(data);
 
     const accessToken = getAccessToken();
 
@@ -99,7 +105,7 @@ export async function updateTask (){
     };
 
     try {
-        const response = await axios.get(url, { headers });
+        const response = await axios.put(url, data, { headers });
         const deserialData = response.data;
         taskItemsData = [...deserialData];
     } catch (error) {
@@ -143,6 +149,43 @@ export async function createTaskItem(data) {
 
     return { taskItemsData,isUnauthorized };
 }
+
+
+export async function deleteTaskItem(data) {
+    const path = "/deletetask";
+    const url = `${todoListUrl}${path}`;
+    console.log(url);
+    const accessToken = getAccessToken();
+
+    var taskItemsData = [];
+    var isUnauthorized = false;
+    if (!accessToken) {
+        console.log('No accessToken found in session storage');
+        return;
+    }
+
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+    };
+
+    try {
+        const response = await axios.delete(url, {
+            data: data,
+            headers: headers,
+        });
+        const deserialData = response.data;
+        taskItemsData = [...deserialData];
+        console.log(taskItemsData);
+    } catch (error) {
+        if (error.response.status === 401) {
+            isUnauthorized = true;
+        }
+        console.log(error.message);
+    }
+
+    return { taskItemsData, isUnauthorized };
+}
+
 
 
 
