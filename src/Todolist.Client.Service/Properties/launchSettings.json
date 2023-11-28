@@ -1,0 +1,34 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:41377",
+      "sslPort": 44312
+    }
+  },
+  "profiles": {
+    "Todolist.Client.Service": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7259;http://localhost:5214",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy",
+        "JWTCred_JWT__Key": "This is my supper secret key for jwt",
+        "JWTCred_JWT__Issuer": "https://fangwen.info",
+        "JWTCred_JWT__Audience": "todolist.info",
+        "Firestore_Collection": "TaskItemCollections",
+        "Firestore_ProjectId": "todolistdatabase-ef822",
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
+      }
+    }
+  }
+}
