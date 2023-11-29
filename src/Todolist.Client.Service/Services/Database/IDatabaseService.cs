@@ -13,5 +13,6 @@ namespace TodoList.Service.Services.Database
         public Task<ActionResult<List<TaskItemConfig>>> UpdateItem(TaskItemConfig taskItem, string user, string? newItemUser);
 
         public Task<ActionResult<List<TaskItemConfig>>> GetTaskItemsByFilterSort(string user, string? status, string? name, DateTime? dueDate, string? order);
+        public Task<List<string>> GetCurrentTaskOwner(TaskItemConfig taskItem);
     }
 }

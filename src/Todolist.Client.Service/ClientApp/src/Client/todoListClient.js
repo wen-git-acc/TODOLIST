@@ -88,8 +88,6 @@ export async function updateTask(data, newOwner) {
     }
     const path = "/updatetask";
     const url = `${todoListUrl}${path}${queryParameter}`;
-    console.log(url);
-    console.log(data);
 
     const accessToken = getAccessToken();
 
@@ -139,7 +137,7 @@ export async function createTaskItem(data) {
         const response = await axios.post(url, data,{ headers });
         const deserialData = response.data;
         taskItemsData = [...deserialData];
-        console.log(taskItemsData);
+      
     } catch (error) {
         if (error.response.status === 401) {
             isUnauthorized = true;
@@ -154,7 +152,6 @@ export async function createTaskItem(data) {
 export async function deleteTaskItem(data) {
     const path = "/deletetask";
     const url = `${todoListUrl}${path}`;
-    console.log(url);
     const accessToken = getAccessToken();
 
     var taskItemsData = [];
@@ -175,7 +172,7 @@ export async function deleteTaskItem(data) {
         });
         const deserialData = response.data;
         taskItemsData = [...deserialData];
-        console.log(taskItemsData);
+ 
     } catch (error) {
         if (error.response.status === 401) {
             isUnauthorized = true;
