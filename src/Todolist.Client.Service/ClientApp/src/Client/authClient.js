@@ -14,7 +14,6 @@ export async function getToken(username, password) {
         token = deserialData["token"]
         sessionStorage.setItem("accessToken", token);
 
-        // Assuming the response contains a 'success' flag and a 'message'
         message = "Login Success!";
         isSuccess = true;
     } catch (error) {

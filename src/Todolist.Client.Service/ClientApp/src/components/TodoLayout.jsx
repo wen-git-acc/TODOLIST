@@ -22,7 +22,7 @@ var Container = styled.div`
 
 export function TodoLayout() {
     const {isLogin} = useContext(AuthContext);
-    console.log(`hi${isLogin}`);
+
     return (
         <>
             <Container>

@@ -20,14 +20,10 @@ namespace TodoList.Service.Extensions
             _collectionName = _configuration[ConfigKeys.firebaseCollectionName]!;
             _projectId = _configuration[ConfigKeys.firebaseProjectId]!;
             InitializeFirestoreDb();
-            
-            
         }
 
         private void InitializeFirestoreDb()
         {
-            //var firebaseCredentialsJson = "./Extensions/todolistdatabase-ef822-firebase-adminsdk-1cmms-ea35a0dfd3.json";
-            //var credentials = File.ReadAllText(firebaseCredentialsJson);
             var credentials = _configuration["firestoreServiceAccount"];
             var builder = new FirestoreClientBuilder{JsonCredentials = credentials};
             firestoreDb = FirestoreDb.Create(_projectId, builder.Build());

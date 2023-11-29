@@ -15,11 +15,6 @@ namespace TodoList.Service.Controllers
     [Route("[controller]/[action]")]
     public class ToDoListController : ControllerBase
     {
-    //    private static readonly string[] Summaries = new[]
-    //    {
-    //    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    //};
-
         private readonly ILogger<ToDoListController> _logger;
      
         private readonly IDatabaseService _database;

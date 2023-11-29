@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import { TaskItemContext } from '../context/TaskItemContext';
 import { AuthContext } from '../context/AuthContext';
-import { createTaskItem, getTaskItemList, getTaskItemsByFilter } from '../Client/todoListClient';
+import { getTaskItemsByFilter } from '../Client/todoListClient';
 
 const StyledForm = styled.form`
   position:relative;
@@ -56,34 +56,17 @@ export default function TodoFilter() {
         var dueDate = filterDueDate !== "" ? (new Date(filterDueDate)).toISOString() : null;
 
         var { taskItemsData, isUnauthorized } = await getTaskItemsByFilter(status, name, dueDate, sortOrder);
-        console.log(taskItemsData);
         if (isUnauthorized) {
             updateLoginStatus(false);
         }
 
         updateTaskItemList(taskItemsData);
-
-        // Filter tasks based on entered criteria
-     
-        //// Update the filtered task list
-        //updateFilteredTaskItemList(filteredTasks);
     };
-
-    //const handleFilters = () => {
-    //    // Clear filters and show all tasks
-    //    setFilterName('');
-    //    setFilterStatus('all');
-    //    setFilterDueDate('');
-
-    //    // Update the filtered task list with the original task list
-    //    //updateFilteredTaskItemList(taskItemList);
-    //};
 
     const handleSorts = (e) => {
         var sortValue = e.target.value;
-        console.log("hisort");
         setSortOrder(sortValue);
-        var isAscending = sortOrder.toLowerCase() == "ascending";
+        var isAscending = sortOrder.toLowerCase() === "ascending";
         var currentTaskItemList = [...taskItemList];
         currentTaskItemList.sort((a, b) => {
             const dateA = new Date(a["dueDate"]);

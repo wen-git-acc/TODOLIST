@@ -22,10 +22,6 @@ const StyledLabel = styled.label`
     align-items: center;
 `
 
-const StyledCheckbox = styled.input`
-    margin-right: 10px;
-`
-
 const StyledInfo = styled.div`
     position:relative;
     margin:auto;
@@ -35,18 +31,6 @@ const StyledInfo = styled.div`
     align-items:center;
 `
 
-const StyledButton = styled.button`
-    background: palevioletred;
-    color: #FFF;
-    border-radius: 3px;
-    border: 2px solid palevioletred;
-    padding: 3px 10px;
-    outline: none;
-    cursor: pointer;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-`
 const StyledDeleteButton = styled.button`
     background: palevioletred;
     color: #FFF;
@@ -113,8 +97,8 @@ const StyledSelect = styled.select`
 export default function TodoItem(props) {
     //Todo change back to const
     const { uniqueId, name , description , dueDate , status  } = props;
-    const { accessToken, isLogin, updateLoginStatus } = useContext(AuthContext);
-    const { taskItemList, updateTaskItemList } = useContext(TaskItemContext);
+    const { updateLoginStatus } = useContext(AuthContext);
+    const { updateTaskItemList } = useContext(TaskItemContext);
     const [editName, setName] = useState(name);
     const [editDescription, setDescription] = useState(description);
     const [editStatus, setStatus] = useState(status);
@@ -155,8 +139,7 @@ export default function TodoItem(props) {
     };
 
     async function handleAddOwner (e) {
-        console.log("Add owner");
-        if (newOwner.trim() == "") {
+        if (newOwner.trim() === "") {
             return;
         };
     

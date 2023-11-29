@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import { TaskItemContext } from '../context/TaskItemContext';
 import { AuthContext } from '../context/AuthContext';
-import { createTaskItem, getTaskItemList } from '../Client/todoListClient';
+import { createTaskItem } from '../Client/todoListClient';
 
 const FormContainer = styled.div`
   display: flex;
@@ -52,7 +52,6 @@ export default function TodoForm() {
             return;
         }
 
-
         var newTaskItem = {
             UniqueId: uniqueId,
             Name: name,
@@ -60,11 +59,7 @@ export default function TodoForm() {
             DueDate: (new Date(dueDate)).toISOString(),
             Status: status
         }
-        console.log(dueDate);
-        var datet = new Date(dueDate);
-        var iso = datet.toISOString();
-        console.log(iso);
-
+  
         var { taskItemsData, isUnauthorized } = await createTaskItem(newTaskItem);
 
         if (isUnauthorized) {
