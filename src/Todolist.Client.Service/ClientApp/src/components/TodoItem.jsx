@@ -7,13 +7,14 @@ import { TaskItemContext } from '../context/TaskItemContext';
 
 const StyledList = styled.li`
     list-style: none;
-    width: 600px;
-    minimum-width: 300px;
+    min-width: 300px;
+    width: 100%
     margin-bottom: 10px;
     margin: auto;
     border: 1px solid #ccc;
     padding: 10px;
     position: relative;
+    display:block;
     
 `
 
