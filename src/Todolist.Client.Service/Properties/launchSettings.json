@@ -10,8 +10,8 @@
         "JWTCred_JWT__Issuer": "https://fangwen.info",
         "JWTCred_JWT__Audience": "todolist.info",
         "Firestore_Collection": "TaskItemCollections",
-        "Firestore_ProjectId": "todolistdatabase-ef822",
-        "Firestore_firestoreServiceAccount": ""
+        "Firestore_ProjectId": "example",
+        "Firestore_firestoreServiceAccount": "{\"type\": \"service_account\", \"project_id\": \"example\", \"private_key_id\": \"examplekey\",\"private_key\": \"-----BEGIN PRIVATE KEY-----\supposetobeprivatekey-----END PRIVATE KEY-----\n\",\"client_email\": \"firebase-adminsdk-1cmms@example.iam.gserviceaccount.com\",\"client_id\": \"exampleid\",\"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\"token_uri\": \"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\": \"https://www.googlexample.com\",\"universe_domain\": \"googleapis.com\"}"
       },
       "applicationUrl": "https://localhost:7259;http://localhost:5214"
     },
@@ -35,8 +35,8 @@
         "JWTCred_JWT__Issuer": "https://fangwen.info",
         "JWTCred_JWT__Audience": "todolist.info",
         "Firestore_Collection": "TaskItemCollections",
-        "Firestore_ProjectId": "todolistdatabase-ef822",
-        "Firestore_firestoreServiceAccount": ""
+        "Firestore_ProjectId": "example",
+        "Firestore_firestoreServiceAccount": "{\"type\": \"service_account\", \"project_id\": \"example\", \"private_key_id\": \"examplekey\",\"private_key\": \"-----BEGIN PRIVATE KEY-----\supposetobeprivatekey-----END PRIVATE KEY-----\n\",\"client_email\": \"firebase-adminsdk-1cmms@example.iam.gserviceaccount.com\",\"client_id\": \"exampleid\",\"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\"token_uri\": \"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\": \"https://www.googlexample.com\",\"universe_domain\": \"googleapis.com\"}"
       },
       "publishAllPorts": true,
       "useSSL": true
